@@ -19,4 +19,4 @@ phpenv pear-setup
 
 ## License
 
-The `phpenv-pear-setup`` is released under the [MIT License](https://github.com/sergeyklay/phpenv-pear-setup/blob/master/LICENSE).
+The `phpenv-pear-setup` is released under the [MIT License](https://github.com/sergeyklay/phpenv-pear-setup/blob/master/LICENSE).
