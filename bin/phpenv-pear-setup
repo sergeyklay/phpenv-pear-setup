@@ -4,6 +4,8 @@ set -e
 
 [ -n "$PHPENV_DEBUG" ] && set -x
 
+export PHP_PEAR_PHP_BIN=$(phpenv which php)
+
 PHPENV_ROOT="${PHPENV_ROOT:-$(phpenv root)}"
 
 mkdir -p "$HOME/pear"
