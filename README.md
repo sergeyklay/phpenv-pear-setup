@@ -1,6 +1,6 @@
 # `phpenv-pear-setup`
 
-It's a [phpenv/phpenv](https://github.com/hisayan/phpenv) plugin to setting up the `pear/pecl`.
+It's a [phpenv/phpenv](https://github.com/phpenv/phpenv) plugin to setting up the `pear/pecl`.
 
 ## Installation
 
