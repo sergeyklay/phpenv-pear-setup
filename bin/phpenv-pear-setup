@@ -4,42 +4,51 @@ set -e
 
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-export PHP_PEAR_PHP_BIN=$(phpenv which php)
+if [ "$(phpenv version-name)" = "system" ]
+then
+  echo "phpenv: this command used to configure only local versions, got 'system'" >&2
+  echo "phpenv: to reset your personal $HOME/.pearrc just rename (remove) it" >&2
+  exit 1
+fi
 
-PHPENV_ROOT="${PHPENV_ROOT:-$(phpenv root)}"
+PHP_PEAR_PHP_BIN="$(phpenv which php)"
+export PHP_PEAR_PHP_BIN
 
 mkdir -p "$HOME/pear"
 
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/etc/conf.d"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/docs"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/cfg"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/data"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/tests"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/www"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/php/man"
-mkdir -p "${PHPENV_ROOT}/versions/$(phpenv version-name)/etc/pearkeys"
+mkdir -p "$(phpenv prefix)/etc/conf.d"
+mkdir -p "$(phpenv prefix)/docs"
+mkdir -p "$(phpenv prefix)/cfg"
+mkdir -p "$(phpenv prefix)/data"
+mkdir -p "$(phpenv prefix)/tests"
+mkdir -p "$(phpenv prefix)/www"
+mkdir -p "$(phpenv prefix)/etc/pearkeys"
 
 pear config-set auto_discover 1
-pear config-set preferred_state devel
+pear config-set preferred_state stable
 
-pear config-set php_bin $(phpenv which php)
+pear config-set php_bin "$PHP_PEAR_PHP_BIN"
 
 pear config-set download_dir "$HOME/pear"
-pear config-set php_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear"
-pear config-set ext_dir `$(phpenv which php-config) --extension-dir`
-pear config-set bin_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/bin"
-pear config-set doc_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/docs"
-pear config-set cfg_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/cfg"
-pear config-set data_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/data"
-pear config-set test_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/tests"
-pear config-set www_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/share/pear/www"
-pear config-set sig_keydir "${PHPENV_ROOT}/versions/$(phpenv version-name)/etc/pearkeys"
+pear config-set php_dir "$(phpenv prefix)/share/pear"
+pear config-set ext_dir "$($(phpenv which php-config) --extension-dir)"
+pear config-set bin_dir "$(phpenv prefix)/bin"
+pear config-set doc_dir "$(phpenv prefix)/docs"
+pear config-set cfg_dir "$(phpenv prefix)/cfg"
+pear config-set data_dir "$(phpenv prefix)/data"
+pear config-set test_dir "$(phpenv prefix)/tests"
+pear config-set www_dir "$(phpenv prefix)/www"
+pear config-set sig_keydir "$(phpenv prefix)/etc/pearkeys"
+
+_version="$(phpenv which php-config) --version"
 
 # Does not work on PHP 5.x
-if [ "$(echo `$(phpenv which php-config) --version` | cut -d '.' -f 1)" != "5" ]; then
-	pear config-set man_dir "${PHPENV_ROOT}/versions/$(phpenv version-name)/php/man"
+if [ "$(echo "$_version" | cut -d '.' -f 1)" != "5" ]; then
+	mkdir -p "$(phpenv prefix)/man"
+	pear config-set man_dir "$(phpenv prefix)/man"
 fi
 
-pear config-set php_ini "${PHPENV_ROOT}/versions/$(phpenv version-name)/etc/php.ini"
+unset _version
 
+pear config-set php_ini "$(phpenv prefix)/etc/php.ini"
 pecl channel-update pecl.php.net || true
