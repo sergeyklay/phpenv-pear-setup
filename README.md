@@ -8,7 +8,7 @@ Simply clone the repository into the plugins directory:
 
 ```sh
 mkdir -p "$(phpenv root)/plugins"
-git clone git://github.com/sergeyklay/phpenv-pear-setup.git "$(phpenv root)/plugins/phpenv-pear-setup"
+git clone https://github.com/sergeyklay/phpenv-pear-setup.git "$(phpenv root)/plugins/phpenv-pear-setup"
 ```
 
 ## Usage
